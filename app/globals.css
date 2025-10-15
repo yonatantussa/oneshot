@@ -12,6 +12,7 @@ html, body {
   color: rgb(var(--foreground));
   background: #0a0a0f;
   min-height: 100vh;
+  min-height: 100dvh; /* Dynamic viewport height for mobile */
   overflow-x: hidden;
 }
 
@@ -19,6 +20,7 @@ body {
   background: linear-gradient(to bottom, #0a0a0f 0%, #12121a 50%, #1a1a24 100%);
   background-attachment: fixed;
   min-height: 100vh;
+  min-height: 100dvh;
 }
 
 ::selection {
