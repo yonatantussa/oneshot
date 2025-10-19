@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+  --border: 240 3.7% 15.9%;
+}
+
+html, body {
+  color: rgb(var(--foreground));
+  background: #0a0a0f;
+  min-height: 100vh;
+  min-height: 100dvh; /* Dynamic viewport height for mobile */
+  overflow-x: hidden;
+}
+
+body {
+  background: linear-gradient(to bottom, #0a0a0f 0%, #12121a 50%, #1a1a24 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+::selection {
+  background-color: rgba(96, 165, 250, 0.3);
+  color: inherit;
+}
+
+::-moz-selection {
+  background-color: rgba(96, 165, 250, 0.3);
+  color: inherit;
+}
+
+@layer utilities {
+  .glass {
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .glass-card {
+    @apply glass rounded-2xl shadow-2xl;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  }
+
+  .gradient-border {
+    position: relative;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    border-radius: 1rem;
+  }
+
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 1rem;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.4), rgba(168, 85, 247, 0.4));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+}
