@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Copy, Share, Download, Volume2 } from 'lucide-react';
+import { Copy, Share, Download, Volume2, Video } from 'lucide-react';
 import type { ExplainResponse } from '@/types';
 import { ExpandableText } from './expandable/ExpandableText';
 import { SelectionChatbox } from './SelectionChatbox';
@@ -18,6 +18,8 @@ export function ExplanationCard({ explanation }: ExplanationCardProps) {
   const [isGeneratingAudio, setIsGeneratingAudio] = useState(false);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isGeneratingVideo, setIsGeneratingVideo] = useState(false);
+  const [videoUrl, setVideoUrl] = useState<string | null>(null);
 
   const handleTextSelection = () => {
     const selection = window.getSelection();
@@ -85,6 +87,33 @@ export function ExplanationCard({ explanation }: ExplanationCardProps) {
     }
   };
 
+  const handleGenerateVideo = async () => {
+    setIsGeneratingVideo(true);
+    try {
+      const response = await fetch('/api/generate-video', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ topic, text: root.text }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.details || 'Failed to generate video');
+      }
+
+      const data = await response.json();
+      setVideoUrl(data.videoUrl);
+
+      // Open video in new tab
+      window.open(data.videoUrl, '_blank');
+    } catch (error) {
+      console.error('Video generation failed:', error);
+      alert(`Failed to generate video: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    } finally {
+      setIsGeneratingVideo(false);
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -121,6 +150,20 @@ export function ExplanationCard({ explanation }: ExplanationCardProps) {
 
             {/* Actions - subtle icons */}
             <div className="flex items-center gap-1">
+              <button
+                onClick={handleGenerateVideo}
+                disabled={isGeneratingVideo}
+                className={cn(
+                  'p-2 rounded-full',
+                  'text-gray-500 hover:text-gray-300',
+                  'hover:bg-white/[0.05]',
+                  'transition-all duration-200',
+                  isGeneratingVideo && 'animate-pulse opacity-50'
+                )}
+                title={isGeneratingVideo ? 'Generating video...' : 'Generate video'}
+              >
+                <Video className="w-4 h-4" />
+              </button>
               <button
                 onClick={handleCopy}
                 className={cn(
